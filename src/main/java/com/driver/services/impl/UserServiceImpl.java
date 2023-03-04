@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
             }
 
             country.setUser(user); //reverse linking
-            user.setCountry(country);
+            user.setOriginalCountry(country);
             user.setConnected(false); //vpn main goal
 
             String code = country.getCode()+"."+userRepository3.save(user).getId();

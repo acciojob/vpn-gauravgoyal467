@@ -22,10 +22,10 @@ public class ConnectionServiceImpl implements ConnectionService {
     @Override
     public User connect(int userId, String countryName) throws Exception{
         User user = userRepository2.findById(userId).get();
-        if(user.isConnected()){
+        if(user.getMaskedIp()!=null){
             throw new Exception("Already connected");
         }
-        else if(countryName.equalsIgnoreCase(user.getCountry().getCountryName().toString())){
+        else if(countryName.equalsIgnoreCase(user.getOriginalCountry().getCountryName().toString())){
             return user;
         }
         else {
@@ -71,7 +71,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     @Override
     public User disconnect(int userId) throws Exception {
         User user = userRepository2.findById(userId).get();
-        if(!user.isConnected()){
+        if(!user.getConnected()){
             throw new Exception("Already disconnected");
         }
         user.setMaskedIp(null);
@@ -84,11 +84,11 @@ public class ConnectionServiceImpl implements ConnectionService {
         User sender = userRepository2.findById(senderId).get();
         User reciever = userRepository2.findById(receiverId).get();
 
-        if(reciever.isConnected()){
+        if(reciever.getMaskedIp()!=null){
             String str = reciever.getMaskedIp();
             String cc = str.substring(0,3); //getting country code = cc from the whole maskedIp
 
-            if(cc.equals(sender.getCountry().getCode())) {
+            if(cc.equals(sender.getOriginalCountry().getCode())) {
                 return sender;
             }
             else {
@@ -107,7 +107,7 @@ public class ConnectionServiceImpl implements ConnectionService {
                 }
 
                 User user1 = connect(senderId,countryName);
-                if (!user1.isConnected()){
+                if (!user1.getConnected()){
                     throw new Exception("Cannot establish communication");
                 }
                 else {
@@ -116,12 +116,12 @@ public class ConnectionServiceImpl implements ConnectionService {
             }
         }
         else {
-            if (reciever.getCountry().equals(sender.getCountry())) {
+            if (reciever.getOriginalCountry().equals(sender.getOriginalCountry())) {
                 return sender;
             }
-            String countryName = reciever.getCountry().getCountryName().toString();
+            String countryName = reciever.getOriginalCountry().getCountryName().toString();
             User user2 = connect(senderId, countryName);
-            if (!user2.isConnected()) {
+            if (!user2.getConnected()) {
                 throw new Exception("Cannot establish communication");
             } else{
                 return user2;
