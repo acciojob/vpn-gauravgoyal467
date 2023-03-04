@@ -15,12 +15,13 @@ public class Admin {
 
     private String password;
 
-    //mapping
-    //Admin is parent wrt ServiceProvider
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<ServiceProvider> serviceProviders = new ArrayList<>();
-
     public Admin() {
+    }
+    public Admin(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public int getId() {

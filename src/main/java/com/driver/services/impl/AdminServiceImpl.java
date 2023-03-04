@@ -22,61 +22,67 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     CountryRepository countryRepository1;
 
+
     @Override
     public Admin register(String username, String password) {
-        Admin admin=new Admin();
-        admin.setUsername(username);
+        Admin admin = new Admin();
         admin.setPassword(password);
+        admin.setUsername(username);
+
         adminRepository1.save(admin);
         return admin;
     }
 
     @Override
     public Admin addServiceProvider(int adminId, String providerName) {
-        Admin admin=adminRepository1.findById(adminId).get();
-        //creating a serviceProvider
-        ServiceProvider serviceProvider=new ServiceProvider();
-        //setting its attributes
+        Admin admin = adminRepository1.findById(adminId).get();
+        ServiceProvider serviceProvider = new ServiceProvider();
+
         serviceProvider.setAdmin(admin);
         serviceProvider.setName(providerName);
-        //adding it back to list of serviceProviders for admin
+
         admin.getServiceProviders().add(serviceProvider);
         adminRepository1.save(admin);
+
         return admin;
     }
 
     @Override
     public ServiceProvider addCountry(int serviceProviderId, String countryName) throws Exception{
-        if(countryName.equalsIgnoreCase("IND") || countryName.equalsIgnoreCase("USA") || countryName.equalsIgnoreCase("JPN") || countryName.equalsIgnoreCase("CHI") || countryName.equalsIgnoreCase("AUS")) {
-            Country country = new Country();
 
-            if(countryName.equalsIgnoreCase("IND")){
+        if(countryName.equalsIgnoreCase("ind") || countryName.equalsIgnoreCase("usa") || countryName.equalsIgnoreCase("aus")||countryName.equalsIgnoreCase("jpn")||countryName.equalsIgnoreCase("chi")){
+
+            Country country = new Country();
+            ServiceProvider serviceProvider = serviceProviderRepository1.findById(serviceProviderId).get();
+
+            if (countryName.equalsIgnoreCase("ind")){
                 country.setCountryName(CountryName.IND);
                 country.setCode(CountryName.IND.toCode());
             }
-            else if(countryName.equalsIgnoreCase("USA")){
+            if (countryName.equalsIgnoreCase("usa")){
                 country.setCountryName(CountryName.USA);
                 country.setCode(CountryName.USA.toCode());
             }
-            else if(countryName.equalsIgnoreCase("JPN")){
-                country.setCountryName(CountryName.JPN);
-                country.setCode(CountryName.JPN.toCode());
-            }
-            else if(countryName.equalsIgnoreCase("CHI")){
-                country.setCountryName(CountryName.CHI);
-                country.setCode(CountryName.CHI.toCode());
-            }
-            else if(countryName.equalsIgnoreCase("AUS")){
+            if (countryName.equalsIgnoreCase("aus")){
                 country.setCountryName(CountryName.AUS);
                 country.setCode(CountryName.AUS.toCode());
             }
-            ServiceProvider serviceProvider = serviceProviderRepository1.findById(serviceProviderId).get();
+            if (countryName.equalsIgnoreCase("jpn")){
+                country.setCountryName(CountryName.JPN);
+                country.setCode(CountryName.JPN.toCode());
+            }
+            if (countryName.equalsIgnoreCase("chi")){
+                country.setCountryName(CountryName.CHI);
+                country.setCode(CountryName.CHI.toCode());
+            }
             country.setServiceProvider(serviceProvider);
             serviceProvider.getCountryList().add(country);
             serviceProviderRepository1.save(serviceProvider);
+
             return serviceProvider;
-        }else{
-            throw new Exception("Country not found");
         }
+        else
+            throw new Exception("Country not found");
+
     }
 }

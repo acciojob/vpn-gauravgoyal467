@@ -23,59 +23,59 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(String username, String password, String countryName) throws Exception{
-        User user = new User();
+        if(countryName.equalsIgnoreCase("ind") || countryName.equalsIgnoreCase("usa") || countryName.equalsIgnoreCase("aus")||countryName.equalsIgnoreCase("jpn")||countryName.equalsIgnoreCase("chi")) {
 
-        if(countryName.equalsIgnoreCase("IND") || countryName.equalsIgnoreCase("USA")|| countryName.equalsIgnoreCase("JPN")|| countryName.equalsIgnoreCase("AUS")|| countryName.equalsIgnoreCase("CHI")){
-            user.setUsername(username);
+            User user = new User();
             user.setPassword(password);
+            user.setUsername(username);
 
-            Country country = new Country(); //linking
-            if(countryName.equalsIgnoreCase("IND")){
+            Country country = new Country();
+
+            if (countryName.equalsIgnoreCase("ind")) {
                 country.setCountryName(CountryName.IND);
                 country.setCode(CountryName.IND.toCode());
             }
-            else if(countryName.equalsIgnoreCase("USA")){
+            if (countryName.equalsIgnoreCase("usa")) {
                 country.setCountryName(CountryName.USA);
                 country.setCode(CountryName.USA.toCode());
             }
-            else if(countryName.equalsIgnoreCase("JPN")){
-                country.setCountryName(CountryName.JPN);
-                country.setCode(CountryName.JPN.toCode());
-            }
-            else if(countryName.equalsIgnoreCase("CHI")){
-                country.setCountryName(CountryName.CHI);
-                country.setCode(CountryName.CHI.toCode());
-            }
-            else if(countryName.equalsIgnoreCase("AUS")){
+            if (countryName.equalsIgnoreCase("aus")) {
                 country.setCountryName(CountryName.AUS);
                 country.setCode(CountryName.AUS.toCode());
             }
+            if (countryName.equalsIgnoreCase("jpn")) {
+                country.setCountryName(CountryName.JPN);
+                country.setCode(CountryName.JPN.toCode());
+            }
+            if (countryName.equalsIgnoreCase("chi")) {
+                country.setCountryName(CountryName.CHI);
+                country.setCode(CountryName.CHI.toCode());
+            }
 
-            country.setUser(user); //reverse linking
+            country.setUser(user);
             user.setOriginalCountry(country);
-            user.setConnected(false); //vpn main goal
+            user.setConnected(false);
 
-            String code = country.getCode()+"."+userRepository3.save(user).getId();
-            user.setOriginalIp(code); //new
+            String IP = country.getCode() +"."+ userRepository3.save(user).getId();
+            user.setOriginalIp(IP);
+
             userRepository3.save(user);
+            return user;
         }
-        else{  //means user is null
+        else
             throw new Exception("Country not found");
-        }
-        return user;
+
     }
 
     @Override
     public User subscribe(Integer userId, Integer serviceProviderId) {
         User user = userRepository3.findById(userId).get();
-
         ServiceProvider serviceProvider = serviceProviderRepository3.findById(serviceProviderId).get();
 
         user.getServiceProviderList().add(serviceProvider);
         serviceProvider.getUsers().add(user);
 
         serviceProviderRepository3.save(serviceProvider);
-       // userRepository3.save(user);
         return user;
     }
 }

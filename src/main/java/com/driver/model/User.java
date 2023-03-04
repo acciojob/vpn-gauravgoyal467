@@ -7,6 +7,7 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,20 +22,21 @@ public class User {
 
     private Boolean connected;
 
-    //mapping
-    //User is parent wrt Connection
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Connection> connectionList = new ArrayList<>();
-
-    //User is child wrt ServiceProvider
     @ManyToMany
     @JoinColumn
-    private List<ServiceProvider> serviceProviderList= new ArrayList<>();
+    private List<ServiceProvider> serviceProviderList = new ArrayList<>();
 
-    //User is parent wrt Country
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Country originalCountry;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Connection> connectionList;
+
+    public User(String username, String password, Country originalCountry) {
+        this.username = username;
+        this.password = password;
+        this.originalCountry = originalCountry;
+    }
     public User() {
     }
 
@@ -78,20 +80,12 @@ public class User {
         this.maskedIp = maskedIp;
     }
 
-    public boolean getConnected() {
+    public Boolean getConnected() {
         return connected;
     }
 
     public void setConnected(Boolean connected) {
         this.connected = connected;
-    }
-
-    public List<Connection> getConnectionList() {
-        return connectionList;
-    }
-
-    public void setConnectionList(List<Connection> connectionList) {
-        this.connectionList = connectionList;
     }
 
     public List<ServiceProvider> getServiceProviderList() {
@@ -108,5 +102,13 @@ public class User {
 
     public void setOriginalCountry(Country originalCountry) {
         this.originalCountry = originalCountry;
+    }
+
+    public List<Connection> getConnectionList() {
+        return connectionList;
+    }
+
+    public void setConnectionList(List<Connection> connectionList) {
+        this.connectionList = connectionList;
     }
 }

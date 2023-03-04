@@ -5,19 +5,17 @@ import javax.persistence.*;
 @Entity
 @Table(name = "connection")
 public class Connection {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    //mapping
-    //connection is child wrt serviceProvider and user so
-
-    @ManyToOne
     @JoinColumn
+    @ManyToOne
     private User user;
 
-    @ManyToOne
     @JoinColumn
+    @ManyToOne
     private ServiceProvider serviceProvider;
 
     public Connection() {
@@ -46,4 +44,5 @@ public class Connection {
     public void setServiceProvider(ServiceProvider serviceProvider) {
         this.serviceProvider = serviceProvider;
     }
+
 }
